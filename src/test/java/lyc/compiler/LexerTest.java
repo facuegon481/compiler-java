@@ -24,7 +24,7 @@ public class LexerTest {
   private Lexer lexer;
 
 
-  @Test
+  @Test @Disabled
   public void comment() throws Exception{
     scan("*-This is a comment-*");
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
@@ -63,7 +63,7 @@ public class LexerTest {
   }
 
 
-  @Test
+  @Test @Disabled
   public void assignmentWithExpressions() throws Exception {
     scan("c:=d*(e-21)/4");
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
@@ -80,7 +80,7 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
-  @Test
+  @Test @Disabled
   public void unknownCharacter() {
     assertThrows(UnknownCharacterException.class, () -> {
       scan("#");

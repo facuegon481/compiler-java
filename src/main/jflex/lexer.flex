@@ -2,7 +2,7 @@ package lyc.compiler;
 
 import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
-import lyc.compiler.model.*;
+import lyc.compiler.constants.Constants;import lyc.compiler.files.SymbolTableGenerator;import lyc.compiler.model.*;
 import static lyc.compiler.constants.Constants.*;
 
 %%
@@ -21,11 +21,34 @@ import static lyc.compiler.constants.Constants.*;
 
 %{
   private Symbol symbol(int type){
-    return new Symbol(type, yyline, yycolumn);
-}
+      return new Symbol(type, yyline, yycolumn);
+  }
   private Symbol symbol(int type, Object value){
-    return new Symbol(type, yyline, yycolumn, value);
-}
+      return new Symbol(type, yyline, yycolumn, value);
+  }
+
+  private boolean esCteEnteraValida(){
+      long value = Long.parseLong(yytext());
+      return value >= Constants.MIN_INTEGER_CONSTANT && value <= Constants.MAX_INTEGER_CONSTANT;
+  }
+
+  private boolean esCteFloatValido(){
+      double cteFloat = Math.abs(Double.parseDouble(yytext()));
+      return cteFloat >= Constants.MIN_FLOAT_CONSTANT && cteFloat <= Constants.MAX_FLOAT_CONSTANT;
+  }
+
+  private boolean esLongitudStringValida() {
+      return yylength() <= Constants.MAX_LENGTH_STRING;
+  }
+
+  private void guardarToken() {
+      SymbolTableGenerator.getInstance().addToken(yytext());
+  }
+
+  private void guardarCTE(String dataType){
+      SymbolTableGenerator.getInstance().addToken(yytext(),dataType);
+  }
+
 %}
 
 LineTerminator = \r|\n|\r\n
@@ -35,6 +58,7 @@ WhiteSpace = {LineTerminator}|{Identation}
 
 DIGITO = [0-9]
 LETRA = [a-zA-Z]
+TEXTO = [\"].*[\"]
 
 INIT = "init"
 PUNTO = "."
@@ -62,6 +86,7 @@ IF = "si"
 ELSE = "sino"
 WHILE = "mientras"
 COMA = ","
+
 LITERAL = [\"]{CARACTER_NO_SALTO}*[\"]
 DISTINTO = "<>"
 MENOR_IGUAL = "<="
@@ -70,10 +95,9 @@ MENOR = "<"
 MAYOR = ">"
 LLAVE_A = "{"
 LLAVE_C = "}"
-CONST_ENTERA = (([1-9]{DIGITO}*)|0)
+CONST_ENTERA = ("0"|([1-9]{DIGITO}*))
 CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 OP_REST = "-"
-
 
 %%
 
@@ -82,55 +106,70 @@ OP_REST = "-"
 
 <YYINITIAL>{
 /* identifiers */
-{OP_REST} { System.out.print("SUB "); return symbol(ParserSym.SUB); }
-{PAREN_A} { System.out.print("PAREN_A "); return symbol(ParserSym.OPEN_BRACKET); }
-{PAREN_C} { System.out.print("PAREN_C "); return symbol(ParserSym.CLOSE_BRACKET); }
-{OP_DIV} { System.out.print("OP_DIV "); return symbol(ParserSym.DIV); }
-{INIT} { System.out.print("INIT "); return symbol(ParserSym.INIT); }
-{PUNTO} { System.out.print("PUNTO "); return symbol(ParserSym.PUNTO); }
-{INTEGER} { System.out.print("INTEGER "); return symbol(ParserSym.INTEGER); }
-{FLOAT} { System.out.print("FLOAT "); return symbol(ParserSym.FLOAT); }
-{STRING} { System.out.print("STRING "); return symbol(ParserSym.STRING); }
-{IGUAL_IGUAL} { System.out.print("IGUAL_IGUAL "); return symbol(ParserSym.IGUAL_IGUAL); }
-{ASIGNACION} { System.out.print("ASIGNACION "); return symbol(ParserSym.ASSIG); }
-{PUNTO_COMA} { System.out.print("PUNTO_COMA "); return symbol(ParserSym.PUNTO_COMA); }
-{PRINTF} { System.out.print("PRINTF "); return symbol(ParserSym.PRINTF); }
-{SCANF} { System.out.print("SCANF "); return symbol(ParserSym.SCANF); }
-{AND} { System.out.print("AND "); return symbol(ParserSym.AND); }
-{OR} { System.out.print("OR "); return symbol(ParserSym.OR); }
-{NOT} { System.out.print("NOT "); return symbol(ParserSym.NOT); }
-{SALTO_LINEA} { System.out.print("SALTO_LINEA "); return symbol(ParserSym.SALTO_LINEA); }
+{OP_REST} { System.out.println("SUB "); return symbol(ParserSym.SUB, yytext()); }
+{PAREN_A} { System.out.println("PAREN_A "); return symbol(ParserSym.OPEN_BRACKET, yytext()); }
+{PAREN_C} { System.out.println("PAREN_C "); return symbol(ParserSym.CLOSE_BRACKET, yytext()); }
+{OP_DIV} { System.out.println("OP_DIV "); return symbol(ParserSym.DIV, yytext()); }
+{INIT} { System.out.println("INIT "); return symbol(ParserSym.INIT, yytext()); }
+{PUNTO} { System.out.println("PUNTO "); return symbol(ParserSym.PUNTO, yytext()); }
+{INTEGER} { System.out.println("INTEGER "); return symbol(ParserSym.INTEGER, yytext()); }
+{FLOAT} { System.out.println("FLOAT "); return symbol(ParserSym.FLOAT, yytext()); }
+{STRING} { System.out.println("STRING "); return symbol(ParserSym.STRING, yytext()); }
+{IGUAL_IGUAL} { System.out.println("IGUAL_IGUAL "); return symbol(ParserSym.IGUAL_IGUAL, yytext()); }
+{ASIGNACION} { System.out.println("ASIGNACION "); return symbol(ParserSym.ASSIG, yytext()); }
+{PUNTO_COMA} { System.out.println("PUNTO_COMA "); return symbol(ParserSym.PUNTO_COMA, yytext()); }
+{CONST_ENTERA} {
+                System.out.println("CONST_ENTERAsa ");
+                System.out.println(yytext());
+                if(!esCteEnteraValida()){
+                  throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
+                }
+                guardarCTE("int");
+                return symbol(ParserSym.CONST_ENTERA, yytext());
+            }
+{PRINTF} { System.out.println("PRINTF "); return symbol(ParserSym.PRINTF, yytext()); }
+{SCANF} { System.out.println("SCANF "); return symbol(ParserSym.SCANF, yytext()); }
+{AND} { System.out.println("AND "); return symbol(ParserSym.AND, yytext()); }
+{OR} { System.out.println("OR "); return symbol(ParserSym.OR, yytext()); }
+{NOT} { System.out.println("NOT "); return symbol(ParserSym.NOT, yytext()); }
+{SALTO_LINEA} { System.out.println("SALTO_LINEA "); return symbol(ParserSym.SALTO_LINEA, yytext()); }
 {COMENTARIO_EN_LINEA} { /*ignore*/ }
-{OP_SUMA} { System.out.print("OP_SUMA "); return symbol(ParserSym.PLUS); }
-{OP_MULT} { System.out.print("OP_MULT "); return symbol(ParserSym.MULT); }
-{IF} { System.out.print("IF "); return symbol(ParserSym.IF); }
-{ELSE} { System.out.print("ELSE "); return symbol(ParserSym.ELSE); }
-{WHILE} { System.out.print("WHILE "); return symbol(ParserSym.WHILE); }
-{COMA} { System.out.print("COMA "); return symbol(ParserSym.COMA); }
-{LITERAL} { System.out.print("LITERAL "); return symbol(ParserSym.LITERAL); }
-{DISTINTO} { System.out.print("DISTINTO "); return symbol(ParserSym.DISTINTO); }
-{MENOR_IGUAL} { System.out.print("MENOR_IGUAL "); return symbol(ParserSym.MENOR_IGUAL); }
-{MAYOR_IGUAL} { System.out.print("MAYOR_IGUAL "); return symbol(ParserSym.MAYOR_IGUAL); }
-{MENOR} { System.out.print("MENOR "); return symbol(ParserSym.MENOR); }
-{MAYOR} { System.out.print("MAYOR "); return symbol(ParserSym.MAYOR); }
-{LLAVE_A} { System.out.print("LLAVE_A "); return symbol(ParserSym.LLAVE_A); }
-{LLAVE_C} { System.out.print("LLAVE_C "); return symbol(ParserSym.LLAVE_C); }
-{CONST_REAL} { System.out.print("CONST_REAL "); return symbol(ParserSym.CONST_REAL); }
+{OP_SUMA} { System.out.println("OP_SUMA "); return symbol(ParserSym.PLUS, yytext()); }
+{OP_MULT} { System.out.println("OP_MULT "); return symbol(ParserSym.MULT, yytext()); }
+{IF} { System.out.println("IF "); return symbol(ParserSym.IF, yytext()); }
+{ELSE} { System.out.println("ELSE "); return symbol(ParserSym.ELSE, yytext()); }
+{WHILE} { System.out.println("WHILE "); return symbol(ParserSym.WHILE, yytext()); }
+{COMA} { System.out.println("COMA "); return symbol(ParserSym.COMA, yytext()); }
+{LITERAL} { System.out.println("LITERAL "); return symbol(ParserSym.LITERAL, yytext()); }
+{DISTINTO} { System.out.println("DISTINTO "); return symbol(ParserSym.DISTINTO, yytext()); }
+{MENOR_IGUAL} { System.out.println("MENOR_IGUAL "); return symbol(ParserSym.MENOR_IGUAL, yytext()); }
+{MAYOR_IGUAL} { System.out.println("MAYOR_IGUAL "); return symbol(ParserSym.MAYOR_IGUAL, yytext()); }
+{MENOR} { System.out.println("MENOR "); return symbol(ParserSym.MENOR, yytext()); }
+{MAYOR} { System.out.println("MAYOR "); return symbol(ParserSym.MAYOR, yytext()); }
+{LLAVE_A} { System.out.println("LLAVE_A "); return symbol(ParserSym.LLAVE_A, yytext()); }
+{LLAVE_C} { System.out.println("LLAVE_C "); return symbol(ParserSym.LLAVE_C, yytext()); }
+{CONST_REAL} {
+          System.out.println("CONST_REAL ");
+          if(!esCteFloatValido())
+              throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
+          guardarCTE("float");
+          return symbol(ParserSym.CONST_REAL, yytext());
+      }
 
+{ID} { System.out.println("ID "); guardarToken(); return symbol(ParserSym.IDENTIFIER,yytext()); }
+{TEXTO} {
+          if(!esLongitudStringValida())
+              throw new InvalidLengthException("\"" + yytext() + "\""+ " excede el maximo permitido");
+          guardarCTE("string");
+          return symbol(ParserSym.TEXTO, yytext());
+      }
 
-{CONST_ENTERA} { System.out.print("CONST_ENTERA "); return symbol(ParserSym.INTEGER_CONSTANT); }
-{ID} { System.out.print("ID "); return symbol(ParserSym.IDENTIFIER,yytext()); }
-{DIGITO} { System.out.print("DIGITO "); return symbol(ParserSym.DIGITO,yytext()); }
-{LETRA} { System.out.print("LETRA "); return symbol(ParserSym.LETRA,yytext()); }
-/* Constants */
-
-/* operators */
-
-/* whitespace */
-{WhiteSpace} { /*ignore*/ }
-<<EOF>> { System.out.print("EOF "); return symbol(ParserSym.EOF); }
+"\n"				{}
+"\t"				{}
+"\n\t"				{}
+" "					{}
+"\r\n"				{}
 }
-
 
 /* error fallback */
 [^] { throw new UnknownCharacterException(yytext()); }

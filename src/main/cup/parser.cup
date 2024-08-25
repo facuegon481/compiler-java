@@ -45,6 +45,8 @@ terminal LLAVE_A;
 terminal LLAVE_C;
 terminal INTEGER_CONSTANT;
 terminal CONST_REAL;
+terminal TEXTO;
+terminal CONST_ENTERA;
 
 // Non Terminals
 non terminal sentence;
