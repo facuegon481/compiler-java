@@ -20,7 +20,7 @@ public final class Compiler {
             System.exit(0);
         }
 
-        try (Reader reader = FileFactory.create("/Users/facundogonzalez/Documents/GitHub/compiler-java-2024/src/main/resources/input/test.txt")) {
+        try (Reader reader = FileFactory.create("./src/main/resources/input/" + args[0])) {
             Parser parser = ParserFactory.create(reader);
             parser.parse();
             FileOutputWriter.writeOutput("symbol-table.txt", SymbolTableGenerator.getInstance());

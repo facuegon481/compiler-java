@@ -17,20 +17,17 @@ import static com.google.common.truth.Truth.assertThat;
 import static lyc.compiler.constants.Constants.MAX_LENGTH;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
-
 public class LexerTest {
 
   private Lexer lexer;
 
-
-  @Test @Disabled
+  @Test 
   public void comment() throws Exception{
     scan("*-This is a comment-*");
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
-  @Test @Disabled
+  @Test 
   public void invalidStringConstantLength() {
     assertThrows(InvalidLengthException.class, () -> {
       scan("\"%s\"".formatted(getRandomString()));
@@ -38,7 +35,7 @@ public class LexerTest {
     });
   }
 
-  @Test @Disabled
+  @Test 
   public void invalidIdLength() {
     assertThrows(InvalidLengthException.class, () -> {
       scan(getRandomString());
@@ -46,7 +43,7 @@ public class LexerTest {
     });
   }
 
-  @Test @Disabled
+  @Test 
   public void invalidPositiveIntegerConstantValue() {
     assertThrows(InvalidIntegerException.class, () -> {
       scan("%d".formatted(9223372036854775807L));
@@ -54,7 +51,7 @@ public class LexerTest {
     });
   }
 
-  @Test @Disabled
+  @Test @Disabled //PREGUNTAR ESTO - EN TEORIA NO TENIAMOS QUE RECONOCER ESTO EN EL LEXICO PERO HAY UN TEST PARA DETECTAR NEGATIVOS.
   public void invalidNegativeIntegerConstantValue() {
     assertThrows(InvalidIntegerException.class, () -> {
       scan("%d".formatted(-9223372036854775807L));
@@ -63,7 +60,7 @@ public class LexerTest {
   }
 
 
-  @Test @Disabled
+  @Test 
   public void assignmentWithExpressions() throws Exception {
     scan("c:=d*(e-21)/4");
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
@@ -80,7 +77,7 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
-  @Test @Disabled
+  @Test 
   public void unknownCharacter() {
     assertThrows(UnknownCharacterException.class, () -> {
       scan("#");

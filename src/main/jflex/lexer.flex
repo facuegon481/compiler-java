@@ -2,7 +2,9 @@ package lyc.compiler;
 
 import java_cup.runtime.Symbol;
 import lyc.compiler.ParserSym;
-import lyc.compiler.constants.Constants;import lyc.compiler.files.SymbolTableGenerator;import lyc.compiler.model.*;
+import lyc.compiler.constants.Constants;
+import lyc.compiler.files.SymbolTableGenerator;
+import lyc.compiler.model.*;
 import static lyc.compiler.constants.Constants.*;
 
 %%
@@ -29,7 +31,7 @@ import static lyc.compiler.constants.Constants.*;
 
   private boolean esCteEnteraValida(){
       long value = Long.parseLong(yytext());
-      return value >= Constants.MIN_INTEGER_CONSTANT && value <= Constants.MAX_INTEGER_CONSTANT;
+      return value <= Constants.MAX_INTEGER_CONSTANT;
   }
 
   private boolean esCteFloatValido(){
@@ -41,12 +43,16 @@ import static lyc.compiler.constants.Constants.*;
       return yylength() <= Constants.MAX_LENGTH_STRING;
   }
 
+  private boolean esLongitudIdValida() {
+    return yylength() <= Constants.MAX_LENGTH;
+  }
+
   private void guardarToken() {
       SymbolTableGenerator.getInstance().addToken(yytext());
   }
 
   private void guardarCTE(String dataType){
-      SymbolTableGenerator.getInstance().addToken(yytext(),dataType);
+      SymbolTableGenerator.getInstance().addToken(yytext(), dataType);
   }
 
 %}
@@ -87,7 +93,6 @@ ELSE = "sino"
 WHILE = "mientras"
 COMA = ","
 
-LITERAL = [\"]{CARACTER_NO_SALTO}*[\"]
 DISTINTO = "<>"
 MENOR_IGUAL = "<="
 MAYOR_IGUAL = ">="
@@ -119,13 +124,11 @@ OP_REST = "-"
 {ASIGNACION} { System.out.println("ASIGNACION "); return symbol(ParserSym.ASSIG, yytext()); }
 {PUNTO_COMA} { System.out.println("PUNTO_COMA "); return symbol(ParserSym.PUNTO_COMA, yytext()); }
 {CONST_ENTERA} {
-                System.out.println("CONST_ENTERAsa ");
-                System.out.println(yytext());
-                if(!esCteEnteraValida()){
+                System.out.println("CONST_ENTERA ");
+                if(!esCteEnteraValida())
                   throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
-                }
                 guardarCTE("int");
-                return symbol(ParserSym.CONST_ENTERA, yytext());
+                return symbol(ParserSym.INTEGER_CONSTANT, yytext());
             }
 {PRINTF} { System.out.println("PRINTF "); return symbol(ParserSym.PRINTF, yytext()); }
 {SCANF} { System.out.println("SCANF "); return symbol(ParserSym.SCANF, yytext()); }
@@ -140,7 +143,6 @@ OP_REST = "-"
 {ELSE} { System.out.println("ELSE "); return symbol(ParserSym.ELSE, yytext()); }
 {WHILE} { System.out.println("WHILE "); return symbol(ParserSym.WHILE, yytext()); }
 {COMA} { System.out.println("COMA "); return symbol(ParserSym.COMA, yytext()); }
-{LITERAL} { System.out.println("LITERAL "); return symbol(ParserSym.LITERAL, yytext()); }
 {DISTINTO} { System.out.println("DISTINTO "); return symbol(ParserSym.DISTINTO, yytext()); }
 {MENOR_IGUAL} { System.out.println("MENOR_IGUAL "); return symbol(ParserSym.MENOR_IGUAL, yytext()); }
 {MAYOR_IGUAL} { System.out.println("MAYOR_IGUAL "); return symbol(ParserSym.MAYOR_IGUAL, yytext()); }
@@ -156,8 +158,12 @@ OP_REST = "-"
           return symbol(ParserSym.CONST_REAL, yytext());
       }
 
-{ID} { System.out.println("ID "); guardarToken(); return symbol(ParserSym.IDENTIFIER,yytext()); }
-{TEXTO} {
+{ID} { System.out.println("ID "); 
+            if(!esLongitudIdValida())
+                throw new InvalidLengthException(yytext() + " esta fuera de rango permitido.");
+            guardarToken(); 
+            return symbol(ParserSym.IDENTIFIER,yytext()); }
+{TEXTO} { System.out.println("TEXTO ");
           if(!esLongitudStringValida())
               throw new InvalidLengthException("\"" + yytext() + "\""+ " excede el maximo permitido");
           guardarCTE("string");
@@ -169,7 +175,8 @@ OP_REST = "-"
 "\n\t"				{}
 " "					{}
 "\r\n"				{}
-}
 
+}
+<<EOF>> { System.out.print("EOF "); return symbol(ParserSym.EOF); }
 /* error fallback */
 [^] { throw new UnknownCharacterException(yytext()); }

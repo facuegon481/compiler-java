@@ -35,7 +35,6 @@ terminal IF;
 terminal ELSE;
 terminal WHILE;
 terminal COMA;
-terminal LITERAL;
 terminal DISTINTO;
 terminal MENOR_IGUAL;
 terminal MAYOR_IGUAL;
@@ -46,7 +45,6 @@ terminal LLAVE_C;
 terminal INTEGER_CONSTANT;
 terminal CONST_REAL;
 terminal TEXTO;
-terminal CONST_ENTERA;
 
 // Non Terminals
 non terminal sentence;
