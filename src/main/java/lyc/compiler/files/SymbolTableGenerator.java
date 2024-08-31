@@ -8,9 +8,9 @@ import java.util.Map;
 public class SymbolTableGenerator implements FileGenerator{
     private static SymbolTableGenerator symbolTable;
 
-    private Map<String,SymbolTableRecord> symbols;
+    private Map<String, SymbolTableRecord> symbols;
     private SymbolTableGenerator() {
-        this.symbols = new HashMap<String,SymbolTableRecord>();
+        this.symbols = new HashMap<String, SymbolTableRecord>();
     }
     public static SymbolTableGenerator getInstance() {
         if(symbolTable == null) {
@@ -30,13 +30,13 @@ public class SymbolTableGenerator implements FileGenerator{
 
     public void addToken(String token) {
         if(!this.symbols.containsKey(token)) {
-            this.symbols.put(token,new SymbolTableRecord());
+            this.symbols.put(token, new SymbolTableRecord());
         }
     }
 
     public void addToken(String token,String dataType) {
         if(!this.symbols.containsKey(token)) {
-            SymbolTableRecord data = new SymbolTableRecord(dataType,token,Integer.toString(token.length()-1));
+            SymbolTableRecord data = new SymbolTableRecord(dataType, token, Integer.toString(token.length()-1));
             this.symbols.put("_" + token,data);
         }
     }

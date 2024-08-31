@@ -60,7 +60,7 @@ import static lyc.compiler.constants.Constants.*;
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 Identation = [\t\f]
-WhiteSpace = {LineTerminator}|{Identation}
+WhiteSpace = {LineTerminator}|{Identation} // necesario???
 
 DIGITO = [0-9]
 LETRA = [a-zA-Z]
@@ -71,11 +71,15 @@ PUNTO = "."
 INTEGER = "int"
 FLOAT = "float"
 STRING = "string"
+PRINTF = "escribir"
+SCANF = "leer"
+GETPENULTIMATEPOSITION = "getPenultimatePosition"
+SUMALOSULTIMOS = "sumaLosUltimos"
+
 IGUAL_IGUAL = "=="
 ASIGNACION = ":="
 PUNTO_COMA = ";"
-PRINTF = "escribir"
-SCANF = "leer"
+
 AND = "AND"
 OR = "OR"
 NOT = "NOT"
@@ -93,6 +97,8 @@ ELSE = "sino"
 WHILE = "mientras"
 COMA = ","
 
+COR_A = "["
+COR_C = "]"
 DISTINTO = "<>"
 MENOR_IGUAL = "<="
 MAYOR_IGUAL = ">="
@@ -111,72 +117,77 @@ OP_REST = "-"
 
 <YYINITIAL>{
 /* identifiers */
-{OP_REST} { System.out.println("SUB "); return symbol(ParserSym.SUB, yytext()); }
-{PAREN_A} { System.out.println("PAREN_A "); return symbol(ParserSym.OPEN_BRACKET, yytext()); }
-{PAREN_C} { System.out.println("PAREN_C "); return symbol(ParserSym.CLOSE_BRACKET, yytext()); }
-{OP_DIV} { System.out.println("OP_DIV "); return symbol(ParserSym.DIV, yytext()); }
-{INIT} { System.out.println("INIT "); return symbol(ParserSym.INIT, yytext()); }
-{PUNTO} { System.out.println("PUNTO "); return symbol(ParserSym.PUNTO, yytext()); }
-{INTEGER} { System.out.println("INTEGER "); return symbol(ParserSym.INTEGER, yytext()); }
-{FLOAT} { System.out.println("FLOAT "); return symbol(ParserSym.FLOAT, yytext()); }
-{STRING} { System.out.println("STRING "); return symbol(ParserSym.STRING, yytext()); }
-{IGUAL_IGUAL} { System.out.println("IGUAL_IGUAL "); return symbol(ParserSym.IGUAL_IGUAL, yytext()); }
-{ASIGNACION} { System.out.println("ASIGNACION "); return symbol(ParserSym.ASSIG, yytext()); }
-{PUNTO_COMA} { System.out.println("PUNTO_COMA "); return symbol(ParserSym.PUNTO_COMA, yytext()); }
+{OP_REST} { System.out.println("Lexer found: SUB "); return symbol(ParserSym.SUB, yytext()); }
+{PAREN_A} { System.out.println("Lexer found: PAREN_A "); return symbol(ParserSym.OPEN_BRACKET, yytext()); }
+{PAREN_C} { System.out.println("Lexer found: PAREN_C "); return symbol(ParserSym.CLOSE_BRACKET, yytext()); }
+{OP_DIV} { System.out.println("Lexer found: OP_DIV "); return symbol(ParserSym.DIV, yytext()); }
+{INIT} { System.out.println("Lexer found: INIT "); return symbol(ParserSym.INIT, yytext()); }
+{PUNTO} { System.out.println("Lexer found: PUNTO "); return symbol(ParserSym.PUNTO, yytext()); }
+{INTEGER} { System.out.println("Lexer found: INTEGER "); return symbol(ParserSym.INTEGER, yytext()); }
+{FLOAT} { System.out.println("Lexer found: FLOAT "); return symbol(ParserSym.FLOAT, yytext()); }
+{STRING} { System.out.println("Lexer found: STRING "); return symbol(ParserSym.STRING, yytext()); }
+{IGUAL_IGUAL} { System.out.println("Lexer found: IGUAL_IGUAL "); return symbol(ParserSym.IGUAL_IGUAL, yytext()); }
+{ASIGNACION} { System.out.println("Lexer found: ASIGNACION "); return symbol(ParserSym.ASSIG, yytext()); }
+{PUNTO_COMA} { System.out.println("Lexer found: PUNTO_COMA "); return symbol(ParserSym.PUNTO_COMA, yytext()); }
 {CONST_ENTERA} {
-                System.out.println("CONST_ENTERA ");
+                System.out.println("Lexer found: CONST_ENTERA ");
                 if(!esCteEnteraValida())
                   throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
                 guardarCTE("int");
                 return symbol(ParserSym.INTEGER_CONSTANT, yytext());
             }
-{PRINTF} { System.out.println("PRINTF "); return symbol(ParserSym.PRINTF, yytext()); }
-{SCANF} { System.out.println("SCANF "); return symbol(ParserSym.SCANF, yytext()); }
-{AND} { System.out.println("AND "); return symbol(ParserSym.AND, yytext()); }
-{OR} { System.out.println("OR "); return symbol(ParserSym.OR, yytext()); }
-{NOT} { System.out.println("NOT "); return symbol(ParserSym.NOT, yytext()); }
-{SALTO_LINEA} { System.out.println("SALTO_LINEA "); return symbol(ParserSym.SALTO_LINEA, yytext()); }
+{PRINTF} { System.out.println("Lexer found: PRINTF "); return symbol(ParserSym.PRINTF, yytext()); }
+{SCANF} { System.out.println("Lexer found: SCANF "); return symbol(ParserSym.SCANF, yytext()); }
+{AND} { System.out.println("Lexer found: AND "); return symbol(ParserSym.AND, yytext()); }
+{OR} { System.out.println("Lexer found: OR "); return symbol(ParserSym.OR, yytext()); }
+{NOT} { System.out.println("Lexer found: NOT "); return symbol(ParserSym.NOT, yytext()); }
+{SALTO_LINEA} { System.out.println("Lexer found: SALTO_LINEA "); return symbol(ParserSym.SALTO_LINEA, yytext()); }
 {COMENTARIO_EN_LINEA} { /*ignore*/ }
-{OP_SUMA} { System.out.println("OP_SUMA "); return symbol(ParserSym.PLUS, yytext()); }
-{OP_MULT} { System.out.println("OP_MULT "); return symbol(ParserSym.MULT, yytext()); }
-{IF} { System.out.println("IF "); return symbol(ParserSym.IF, yytext()); }
-{ELSE} { System.out.println("ELSE "); return symbol(ParserSym.ELSE, yytext()); }
-{WHILE} { System.out.println("WHILE "); return symbol(ParserSym.WHILE, yytext()); }
-{COMA} { System.out.println("COMA "); return symbol(ParserSym.COMA, yytext()); }
-{DISTINTO} { System.out.println("DISTINTO "); return symbol(ParserSym.DISTINTO, yytext()); }
-{MENOR_IGUAL} { System.out.println("MENOR_IGUAL "); return symbol(ParserSym.MENOR_IGUAL, yytext()); }
-{MAYOR_IGUAL} { System.out.println("MAYOR_IGUAL "); return symbol(ParserSym.MAYOR_IGUAL, yytext()); }
-{MENOR} { System.out.println("MENOR "); return symbol(ParserSym.MENOR, yytext()); }
-{MAYOR} { System.out.println("MAYOR "); return symbol(ParserSym.MAYOR, yytext()); }
-{LLAVE_A} { System.out.println("LLAVE_A "); return symbol(ParserSym.LLAVE_A, yytext()); }
-{LLAVE_C} { System.out.println("LLAVE_C "); return symbol(ParserSym.LLAVE_C, yytext()); }
+{OP_SUMA} { System.out.println("Lexer found: OP_SUMA "); return symbol(ParserSym.PLUS, yytext()); }
+{OP_MULT} { System.out.println("Lexer found: OP_MULT "); return symbol(ParserSym.MULT, yytext()); }
+{IF} { System.out.println("Lexer found: IF "); return symbol(ParserSym.IF, yytext()); }
+{ELSE} { System.out.println("Lexer found: ELSE "); return symbol(ParserSym.ELSE, yytext()); }
+{GETPENULTIMATEPOSITION} { System.out.println("Lexer found: GETPENULTIMATEPOSITION "); return symbol(ParserSym.GETPENULTIMATEPOSITION, yytext()); }
+{SUMALOSULTIMOS} { System.out.println("Lexer found: SUMALOSULTIMOS "); return symbol(ParserSym.SUMALOSULTIMOS, yytext()); }
+
+{WHILE} { System.out.println("Lexer found: WHILE "); return symbol(ParserSym.WHILE, yytext()); }
+{COMA} { System.out.println("Lexer found: COMA "); return symbol(ParserSym.COMA, yytext()); }
+{DISTINTO} { System.out.println("Lexer found: DISTINTO "); return symbol(ParserSym.DISTINTO, yytext()); }
+{MENOR_IGUAL} { System.out.println("Lexer found: MENOR_IGUAL "); return symbol(ParserSym.MENOR_IGUAL, yytext()); }
+{MAYOR_IGUAL} { System.out.println("Lexer found: MAYOR_IGUAL "); return symbol(ParserSym.MAYOR_IGUAL, yytext()); }
+{MENOR} { System.out.println("Lexer found: MENOR "); return symbol(ParserSym.MENOR, yytext()); }
+{MAYOR} { System.out.println("Lexer found: MAYOR "); return symbol(ParserSym.MAYOR, yytext()); }
+{LLAVE_A} { System.out.println("Lexer found: LLAVE_A "); return symbol(ParserSym.LLAVE_A, yytext()); }
+{LLAVE_C} { System.out.println("Lexer found: LLAVE_C "); return symbol(ParserSym.LLAVE_C, yytext()); }
+{COR_A} { System.out.println("Lexer found: COR_A "); return symbol(ParserSym.COR_A, yytext()); }
+{COR_C} { System.out.println("Lexer found: COR_C "); return symbol(ParserSym.COR_C, yytext()); }
 {CONST_REAL} {
-          System.out.println("CONST_REAL ");
+          System.out.println("Lexer found: CONST_REAL ");
           if(!esCteFloatValido())
               throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
           guardarCTE("float");
           return symbol(ParserSym.CONST_REAL, yytext());
       }
 
-{ID} { System.out.println("ID "); 
+{ID} { System.out.println("Lexer found: ID "); 
             if(!esLongitudIdValida())
                 throw new InvalidLengthException(yytext() + " esta fuera de rango permitido.");
             guardarToken(); 
             return symbol(ParserSym.IDENTIFIER,yytext()); }
-{TEXTO} { System.out.println("TEXTO ");
+{TEXTO} { System.out.println("Lexer found: TEXTO ");
           if(!esLongitudStringValida())
               throw new InvalidLengthException("\"" + yytext() + "\""+ " excede el maximo permitido");
           guardarCTE("string");
           return symbol(ParserSym.TEXTO, yytext());
       }
 
-"\n"				{}
-"\t"				{}
-"\n\t"				{}
-" "					{}
-"\r\n"				{}
+"\n" { /*ignore*/ }
+"\t" { /*ignore*/ }
+"\n\t" { /*ignore*/ }
+" "	 { /*ignore*/ }
+"\r\n" { /*ignore*/ }
 
 }
-<<EOF>> { System.out.print("EOF "); return symbol(ParserSym.EOF); }
+<<EOF>> { System.out.println("Lexer found: EOF "); return symbol(ParserSym.EOF); }
 /* error fallback */
 [^] { throw new UnknownCharacterException(yytext()); }

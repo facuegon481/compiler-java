@@ -1,1 +1,6 @@
 c:=d*(e-21)/4
+si(a>b){
+    string test := "test constant"
+}sino{
+    string test2 := "hola"
+}

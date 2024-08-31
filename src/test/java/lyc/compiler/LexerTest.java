@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.google.common.truth.Truth.assertThat;
 import static lyc.compiler.constants.Constants.MAX_LENGTH;
@@ -51,7 +54,7 @@ public class LexerTest {
     });
   }
 
-  @Test @Disabled //PREGUNTAR ESTO - EN TEORIA NO TENIAMOS QUE RECONOCER ESTO EN EL LEXICO PERO HAY UN TEST PARA DETECTAR NEGATIVOS.
+  @Test @Disabled//PREGUNTAR ESTO - EN TEORIA NO TENIAMOS QUE RECONOCER ESTO EN EL LEXICO PERO HAY UN TEST PARA DETECTAR NEGATIVOS.
   public void invalidNegativeIntegerConstantValue() {
     assertThrows(InvalidIntegerException.class, () -> {
       scan("%d".formatted(-9223372036854775807L));
@@ -74,6 +77,69 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
     assertThat(nextToken()).isEqualTo(ParserSym.DIV);
     assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.EOF);
+  }
+
+  @Test
+  public void testLeerTexto() throws Exception {
+    Path path = Paths.get("src/main/resources/input/test.txt");
+    try {
+      String content = Files.readString(path);
+      scan(content);
+      var token = nextToken();
+      while(token != ParserSym.EOF)
+      {
+        token = nextToken();
+      }
+    }
+    catch(Exception e){
+      throw new Exception("hola");
+    }
+  }
+
+  @Test
+  public void getPenultimatePositionTest() throws Exception {
+    scan("x := getPenultimatePosition([3, 8.2, 2, 55.5])");
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.GETPENULTIMATEPOSITION);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.COR_A);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
+    assertThat(nextToken()).isEqualTo(ParserSym.COR_C);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.EOF);
+  }
+
+  @Test
+  public void sumaLosUltimosTest() throws Exception {
+    scan("x := sumaLosUltimos(4; [28, 13.5, 4, 5.5, 17, 52])");
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.SUMALOSULTIMOS);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.PUNTO_COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.COR_A);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COR_C);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
