@@ -1,6 +1,41 @@
+init {
+    a1, b1 : float
+    variable1 : int
+    p1, p2, p3 : string
+}
 c:=d*(e- 21)/4
+*-comentario-*
 si(a>b){
     test := "test constant"
 }sino{
     test2 := "hola"
 }
+mientras (a > b)
+{
+    a := a + 1
+}
+*-comentario-*
+leer(test1)
+escribir("texto")
+
+a := 1
+b := 1
+c := 2
+
+si (a > b AND c > b)
+{
+    escribir("a es mas grande que b")
+}
+
+si (a > b OR c > b)
+{
+    escribir("a es mas grande que b")
+}
+
+si (NOT a > b)
+{
+    escribir("a no es mas grande que b")
+}
+getPenultimatePosition([3, 8.2, 2, 55.5])
+sumaLosUltimos(4; [28, 13.5, 4, 5.5, 17, 52])
+

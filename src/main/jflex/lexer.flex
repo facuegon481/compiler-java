@@ -75,6 +75,8 @@ IGUAL_IGUAL = "=="
 ASIGNACION = ":="
 PUNTO_COMA = ";"
 
+DOS_PUNTOS = ":"
+
 AND = "AND"
 OR = "OR"
 NOT = "NOT"
@@ -105,7 +107,6 @@ LLAVE_C = "}"
 CONST_ENTERA = ("0"|([1-9]{DIGITO}*))
 CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 
-
 %%
 
 
@@ -117,7 +118,7 @@ CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 {PAREN_A} { return symbol(ParserSym.PAREN_A, yytext()); }
 {PAREN_C} { return symbol(ParserSym.PAREN_C, yytext()); }
 {ASIGNACION} { return symbol(ParserSym.ASIGNACION, yytext()); }
-
+{DOS_PUNTOS} { return symbol(ParserSym.DOS_PUNTOS, yytext()); }
 {OP_DIV} { return symbol(ParserSym.OP_DIV, yytext()); }
 {INIT} { return symbol(ParserSym.INIT, yytext()); }
 {PUNTO} { return symbol(ParserSym.PUNTO, yytext()); }
@@ -183,6 +184,6 @@ CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 "\r\n" { /*ignore*/ }
 
 }
-<<EOF>> { System.out.println("Lexer found: EOF "); return symbol(ParserSym.EOF); }
+<<EOF>> { return symbol(ParserSym.EOF); }
 /* error fallback */
 [^] { throw new UnknownCharacterException(yytext()); }

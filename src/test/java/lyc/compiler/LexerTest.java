@@ -93,7 +93,7 @@ public class LexerTest {
       }
     }
     catch(Exception e){
-      throw new Exception("hola");
+      throw new Exception(e.getMessage());
     }
   }
 
