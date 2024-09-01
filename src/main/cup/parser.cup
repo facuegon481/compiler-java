@@ -4,15 +4,16 @@ import java_cup.runtime.*;
 
 class Parser;
 
-
 // Terminals
-terminal SUB;
-terminal IDENTIFIER;
-terminal ASSIG;
-terminal OPEN_BRACKET;
-terminal CLOSE_BRACKET;
-terminal DIV;
-terminal DIGITO;
+terminal ID;
+terminal ASIGNACION;
+terminal OP_SUMA;
+terminal OP_REST;
+terminal OP_MULT;
+terminal OP_DIV;
+terminal CONST_ENTERA;
+terminal CONST_REAL;
+
 terminal LETRA;
 terminal INIT;
 terminal PUNTO;
@@ -31,8 +32,6 @@ terminal NOT;
 terminal SALTO_LINEA;
 terminal CARACTER_NO_SALTO;
 terminal COMENTARIO_EN_LINEA;
-terminal PLUS;
-terminal MULT;
 terminal IF;
 terminal ELSE;
 terminal WHILE;
@@ -46,28 +45,66 @@ terminal MENOR;
 terminal MAYOR;
 terminal LLAVE_A;
 terminal LLAVE_C;
-terminal INTEGER_CONSTANT;
-terminal CONST_REAL;
+terminal PAREN_A;
+terminal PAREN_C;
 terminal TEXTO;
 
 // Non Terminals
-non terminal sentence;
-non terminal assignment;
-non terminal expression;
-non terminal term;
+
+
+non terminal inicio;
+non terminal programa;
+non terminal sentencia;
+non terminal asignacion;
+non terminal expresion;
+non terminal termino;
 non terminal factor;
+non terminal seleccion;
+non terminal ifheader;
+non terminal condicion;
+non terminal comparacion;
+non terminal comparador;
 
-// Start Symbol Definition
-start with sentence;
+start with inicio;
 
-sentence ::= assignment {: System.out.println("End"); :};
-assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
-expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
-term ::= factor {: System.out.println("Term = factor"); :};
-factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+inicio ::= programa {: System.out.println("Regla 1:   inicio <- programa"); :};
+
+programa ::= programa sentencia {: System.out.println("Regla 2:   programa <- programa sentencia"); :};
+programa ::= sentencia {: System.out.println("Regla 3:   programa <- sentencia"); :};
+
+sentencia ::= asignacion {: System.out.println("Regla 4:  sentencia <- asignacion"); :};
+sentencia ::= seleccion {: System.out.println("Regla 5:  sentencia <- seleccion"); :};
+
+ifheader ::= IF PAREN_A condicion PAREN_C {: System.out.println("Regla 6:  ifheader"); :};
+
+seleccion ::= ifheader LLAVE_A programa LLAVE_C {: System.out.println("7:  seleccion <- ifheader LLAVE_A programa LLAVE_C"); :};
+seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C {: System.out.println("Regla 8:  seleccion <- ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C"); :};
+
+condicion ::= comparacion OR comparacion {: System.out.println("Regla 9:  condicion <- comparacion or comparacion"); :};
+condicion ::= comparacion AND comparacion {: System.out.println("Regla 10:  condicion <- comparacion and comparacion"); :};
+condicion ::= comparacion {: System.out.println("Regla 11:  condicion <- comparacion"); :};
+
+comparacion ::= expresion comparador expresion {: System.out.println("Regla 11:  comparacion <- expresion comparador expresion"); :};
+
+comparador  ::= 	IGUAL_IGUAL:comp {: System.out.println("Regla 12:  comparador <- =="); :};
+comparador  ::= 	DISTINTO:comp {: System.out.println("Regla 13:  comparador <- disntito"); :};
+comparador  ::= 	MAYOR_IGUAL:comp {: System.out.println("Regla 14:  comparador <- mayor igual"); :};
+comparador  ::= 	MENOR_IGUAL:comp {: System.out.println("Regla 15:  comparador <- menor igual"); :};
+comparador  ::= 	MAYOR:comp {: System.out.println("Regla 16:  comparador <- mayor"); :};
+comparador  ::= 	MENOR:comp {: System.out.println("Regla 17:  comparador <- menor"); :};
+
+asignacion ::= ID:_id  ASIGNACION expresion {: System.out.println("Regla 18:  asignacion <- ID ASIGNACION expresion"); :};
+
+expresion ::= expresion OP_SUMA termino {: System.out.println("Regla 19:  expresion <- expresion OP_SUMA termino"); :};
+expresion ::= expresion OP_REST termino {: System.out.println("Regla 20:  expresion <- expresion OP_REST termino"); :};
+expresion ::= termino {: System.out.println("Regla 21:  expresion <- termino"); :};
+
+termino ::= termino OP_MULT factor {: System.out.println("Regla 22:  termino <- termino OP_MULT factor"); :};
+termino ::= termino OP_DIV factor {: System.out.println("Regla 23:  termino <- termino OP_DIV factor"); :};
+termino ::= factor {: System.out.println("Regla 24:  termino <- factor"); :};
+
+factor ::= ID:_id {: System.out.println("Regla 25:  ID" + _id.toString()); :};
+factor ::= CONST_ENTERA {: System.out.println("Regla 26:  CTE ENTERA"); :};
+factor ::= CONST_REAL {: System.out.println("Regla 27:  CONST_REAL"); :};
+factor ::= TEXTO {: System.out.println("Regla 28: TEXTO"); :};
+factor ::= PAREN_A expresion PAREN_C {: System.out.println("Regla 29:  PAREN_A expresion PAREN_C"); :};

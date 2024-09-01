@@ -66,17 +66,17 @@ public class LexerTest {
   @Test 
   public void assignmentWithExpressions() throws Exception {
     scan("c:=d*(e-21)/4");
-    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
-    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-    assertThat(nextToken()).isEqualTo(ParserSym.MULT);
-    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
-    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-    assertThat(nextToken()).isEqualTo(ParserSym.SUB);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
-    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
-    assertThat(nextToken()).isEqualTo(ParserSym.DIV);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.ID);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASIGNACION);
+    assertThat(nextToken()).isEqualTo(ParserSym.ID);
+    assertThat(nextToken()).isEqualTo(ParserSym.OP_MULT);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_A);
+    assertThat(nextToken()).isEqualTo(ParserSym.ID);
+    assertThat(nextToken()).isEqualTo(ParserSym.OP_REST);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_C);
+    assertThat(nextToken()).isEqualTo(ParserSym.OP_DIV);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
@@ -100,46 +100,46 @@ public class LexerTest {
   @Test
   public void getPenultimatePositionTest() throws Exception {
     scan("x := getPenultimatePosition([3, 8.2, 2, 55.5])");
-    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.ID);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASIGNACION);
     assertThat(nextToken()).isEqualTo(ParserSym.GETPENULTIMATEPOSITION);
-    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_A);
     assertThat(nextToken()).isEqualTo(ParserSym.COR_A);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
     assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
     assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
     assertThat(nextToken()).isEqualTo(ParserSym.COR_C);
-    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_C);
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
   @Test
   public void sumaLosUltimosTest() throws Exception {
     scan("x := sumaLosUltimos(4; [28, 13.5, 4, 5.5, 17, 52])");
-    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.ID);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASIGNACION);
     assertThat(nextToken()).isEqualTo(ParserSym.SUMALOSULTIMOS);
-    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_A);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.PUNTO_COMA);
     assertThat(nextToken()).isEqualTo(ParserSym.COR_A);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
     assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
     assertThat(nextToken()).isEqualTo(ParserSym.CONST_REAL);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COMA);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CONST_ENTERA);
     assertThat(nextToken()).isEqualTo(ParserSym.COR_C);
-    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.PAREN_C);
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
