@@ -79,79 +79,78 @@ non terminal constante_numero;
 
 start with inicio;
 
-inicio ::= inicializacion programa {: System.out.println("Regla 1:   inicio <- programa"); :};
+inicio ::= inicializacion programa {: System.out.println("Regla 001: inicio ::= inicializacion programa "); :};
 inicio ::= ;
 
-programa ::= programa sentencia {: System.out.println("Regla 2:   programa <- programa sentencia"); :};
-programa ::= sentencia {: System.out.println("Regla 3:   programa <- sentencia"); :};
+programa ::= programa sentencia {: System.out.println("Regla 002: programa ::= programa sentencia "); :};
+programa ::= sentencia {: System.out.println("Regla 003: programa ::= sentencia "); :};
 
-sentencia ::= asignacion {: System.out.println("Regla 4:  sentencia <- asignacion"); :};
-sentencia ::= seleccion {: System.out.println("Regla 5:  sentencia <- seleccion"); :};
-sentencia ::= iteracion {: System.out.println("Regla 6:  sentencia <- iteracion"); :};
-sentencia ::= leer {: System.out.println("Regla 7:  sentencia <- leer"); :};
-sentencia ::= escribir {: System.out.println("Regla 8:  sentencia <- escribir"); :};
-sentencia ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 9:  sentencia <- GETPENULTIMATEPOSITION PAREN_A lista_numero PAREN_C"); :};
-sentencia ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 10:  sentencia <- SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C"); :};
+sentencia ::= asignacion {: System.out.println("Regla 004: sentencia ::= asignacion "); :};
+sentencia ::= seleccion {: System.out.println("Regla 005: sentencia ::= seleccion "); :};
+sentencia ::= iteracion {: System.out.println("Regla 006: sentencia ::= iteracion "); :};
+sentencia ::= leer {: System.out.println("Regla 007: sentencia ::= leer "); :};
+sentencia ::= escribir {: System.out.println("Regla 008: sentencia ::= escribir "); :};
+sentencia ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 009 : sentencia ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C "); :};
+sentencia ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 010: sentencia ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C "); :};
 
-lista_numeros ::= lista_numeros COMA constante_numero {: System.out.println("Regla 11:  lista_numeros <- lista_numeros PUNTO_COMA constante_numero"); :};
-lista_numeros ::= constante_numero {: System.out.println("Regla 12:  lista_numeros <- constante_numero"); :};
+lista_numeros ::= lista_numeros COMA constante_numero {: System.out.println("Regla 011: lista_numeros ::= lista_numeros COMA constante_numero "); :};
+lista_numeros ::= constante_numero {: System.out.println("Regla 012: lista_numeros ::= constante_numero "); :};
 
-constante_numero ::= CONST_REAL {: System.out.println("Regla 5:  constante_numero <- CONST_REAL"); :};
-constante_numero ::= CONST_ENTERA {: System.out.println("Regla 5:  constante_numero <- CONST_ENTERA"); :};
+constante_numero ::= CONST_REAL {: System.out.println("Regla 013: constante_numero ::= CONST_REAL "); :};
+constante_numero ::= CONST_ENTERA {: System.out.println("Regla 014: constante_numero ::= CONST_ENTERA "); :};
 
-leer ::= SCANF PAREN_A ID PAREN_C {: System.out.println("Regla 5:  leer <- SCANF PAREN_A ID PAREN_C"); :};
-escribir ::= PRINTF PAREN_A factor PAREN_C {: System.out.println("Regla 5:  escribir <- PRINT_F PAREN_A factor PAREN_C"); :};
+leer ::= SCANF PAREN_A ID PAREN_C {: System.out.println("Regla 015: leer ::= SCANF PAREN_A ID PAREN_C "); :};
+escribir ::= PRINTF PAREN_A factor PAREN_C {: System.out.println("Regla 016: escribir ::= PRINTF PAREN_A factor PAREN_C "); :};
 
-whileheader ::= WHILE PAREN_A condicion PAREN_C {: System.out.println("Regla 5:  whileheader <- WHILE PAREN_A condicion PAREN_C"); :};
-iteracion ::= whileheader LLAVE_A programa LLAVE_C {: System.out.println("Regla 5:  iteracion <- whileheader LLAVE_A programa LLAVE_C"); :};
+whileheader ::= WHILE PAREN_A condicion PAREN_C {: System.out.println("Regla 017: whileheader ::= WHILE PAREN_A condicion PAREN_C "); :};
+iteracion ::= whileheader LLAVE_A programa LLAVE_C {: System.out.println("Regla 018: iteracion ::= whileheader LLAVE_A programa LLAVE_C "); :};
 
-ifheader ::= IF PAREN_A condicion PAREN_C {: System.out.println("Regla 6:  ifheader"); :};
+ifheader ::= IF PAREN_A condicion PAREN_C {: System.out.println("Regla 019: ifheader ::= IF PAREN_A condicion PAREN_C "); :};
 
-seleccion ::= ifheader LLAVE_A programa LLAVE_C {: System.out.println("7:  seleccion <- ifheader LLAVE_A programa LLAVE_C"); :};
-seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C {: System.out.println("Regla 8:  seleccion <- ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C"); :};
+seleccion ::= ifheader LLAVE_A programa LLAVE_C {: System.out.println("Regla 020: seleccion ::= ifheader LLAVE_A programa LLAVE_C "); :};
+seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C {: System.out.println("Regla 021: seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C "); :};
 
-condicion ::= comparacion OR comparacion {: System.out.println("Regla 9:  condicion <- comparacion or comparacion"); :};
-condicion ::= comparacion AND comparacion {: System.out.println("Regla 10:  condicion <- comparacion and comparacion"); :};
-condicion ::= NOT comparacion {: System.out.println("Regla 11:  condicion <- NOT comparacion"); :};
-condicion ::= comparacion {: System.out.println("Regla 11:  condicion <- comparacion"); :};
+condicion ::= comparacion OR comparacion {: System.out.println("Regla 022: condicion ::= comparacion OR comparacion "); :};
+condicion ::= comparacion AND comparacion {: System.out.println("Regla 023: condicion ::= comparacion AND comparacion "); :};
+condicion ::= NOT comparacion {: System.out.println("Regla 024: condicion ::= NOT comparacion "); :};
+condicion ::= comparacion {: System.out.println("Regla 025: condicion ::= comparacion "); :};
 
+comparacion ::= expresion comparador expresion {: System.out.println("Regla 026: comparacion ::= expresion comparador expresion "); :};
 
-comparacion ::= expresion comparador expresion {: System.out.println("Regla 11:  comparacion <- expresion comparador expresion"); :};
+comparador  ::= IGUAL_IGUAL:comp {: System.out.println("Regla 027: comparador  ::= 	IGUAL_IGUAL:comp "); :};
+comparador  ::= DISTINTO:comp {: System.out.println("Regla 028: comparador  ::= 	DISTINTO:comp "); :};
+comparador  ::= MAYOR_IGUAL:comp {: System.out.println("Regla 029: comparador  ::= 	MAYOR_IGUAL:comp "); :};
+comparador  ::= MENOR_IGUAL:comp {: System.out.println("Regla 030: comparador  ::= 	MENOR_IGUAL:comp "); :};
+comparador  ::= MAYOR:comp {: System.out.println("Regla 031: comparador  ::= 	MAYOR:comp "); :};
+comparador  ::= MENOR:comp {: System.out.println("Regla 032: comparador  ::= 	MENOR:comp "); :};
 
-comparador  ::= 	IGUAL_IGUAL:comp {: System.out.println("Regla 12:  comparador <- =="); :};
-comparador  ::= 	DISTINTO:comp {: System.out.println("Regla 13:  comparador <- disntito"); :};
-comparador  ::= 	MAYOR_IGUAL:comp {: System.out.println("Regla 14:  comparador <- mayor igual"); :};
-comparador  ::= 	MENOR_IGUAL:comp {: System.out.println("Regla 15:  comparador <- menor igual"); :};
-comparador  ::= 	MAYOR:comp {: System.out.println("Regla 16:  comparador <- mayor"); :};
-comparador  ::= 	MENOR:comp {: System.out.println("Regla 17:  comparador <- menor"); :};
+asignacion ::= ID ASIGNACION expresion {: System.out.println("Regla 033: asignacion ::= ID:_id  ASIGNACION expresion "); :};
 
-asignacion ::= ID:_id  ASIGNACION expresion {: System.out.println("Regla 18:  asignacion <- ID ASIGNACION expresion"); :};
+inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C {: System.out.println("Regla 034: inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C "); :};
 
-inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C {: System.out.println("Regla 18:  inicializacion <- INIT LLAVE_A lista_variables LLAVE_C"); :};
+lista_variables ::= lista_variables declaracion {: System.out.println("Regla 035: lista_variables ::= lista_variables declaracion "); :};
+lista_variables ::= declaracion {: System.out.println("Regla 036: lista_variables ::= declaracion "); :};
 
-lista_variables ::= lista_variables declaracion {: System.out.println("Regla 18:  lista_variables <- lista_variables delcaracion"); :};
-lista_variables ::= declaracion {: System.out.println("Regla 18:  lista_variables <- declaracion"); :};
+declaracion ::= lista_ids DOS_PUNTOS tipo_dato {: System.out.println("Regla 037: declaracion ::= lista_ids DOS_PUNTOS tipo_dato "); :};
 
-declaracion ::= lista_ids DOS_PUNTOS tipo_dato {: System.out.println("Regla 18:  declaracion <- lista_ids DOS PUNTOS tipo_dato"); :};
+lista_ids ::= lista_ids COMA ID {: System.out.println("Regla 038: lista_ids ::= lista_ids COMA ID "); :};
+lista_ids ::= ID {: System.out.println("Regla 039: lista_ids ::= ID "); :};
 
-lista_ids ::= lista_ids COMA ID {: System.out.println("Regla 18:  lista_ids <- lista_ids COMA ID"); :};
-lista_ids ::= ID {: System.out.println("Regla 18:  lista_ids <- ID"); :};
+tipo_dato ::= INTEGER {: System.out.println("Regla 040: tipo_dato ::= INTEGER "); :};
+tipo_dato ::= FLOAT {: System.out.println("Regla 041: tipo_dato ::= FLOAT "); :};
+tipo_dato ::= STRING {: System.out.println("Regla 042: tipo_dato ::= STRING "); :};
 
-tipo_dato ::= INTEGER {: System.out.println("Regla 18:  tipo_dato <- INTEGER"); :};
-tipo_dato ::= FLOAT {: System.out.println("Regla 18:  tipo_dato <- FLOAT"); :};
-tipo_dato ::= STRING {: System.out.println("Regla 18:  tipo_dato <- STRING"); :};
+expresion ::= expresion OP_SUMA termino {: System.out.println("Regla 043: expresion ::= expresion OP_SUMA termino "); :};
+expresion ::= expresion OP_REST termino {: System.out.println("Regla 044: expresion ::= expresion OP_REST termino "); :};
+expresion ::= termino {: System.out.println("Regla 045: expresion ::= termino "); :};
 
-expresion ::= expresion OP_SUMA termino {: System.out.println("Regla 19:  expresion <- expresion OP_SUMA termino"); :};
-expresion ::= expresion OP_REST termino {: System.out.println("Regla 20:  expresion <- expresion OP_REST termino"); :};
-expresion ::= termino {: System.out.println("Regla 21:  expresion <- termino"); :};
+termino ::= termino OP_MULT factor {: System.out.println("Regla 046: termino ::= termino OP_MULT factor "); :};
+termino ::= termino OP_DIV factor {: System.out.println("Regla 047: termino ::= termino OP_DIV factor "); :};
+termino ::= factor {: System.out.println("Regla 048: termino ::= factor "); :};
 
-termino ::= termino OP_MULT factor {: System.out.println("Regla 22:  termino <- termino OP_MULT factor"); :};
-termino ::= termino OP_DIV factor {: System.out.println("Regla 23:  termino <- termino OP_DIV factor"); :};
-termino ::= factor {: System.out.println("Regla 24:  termino <- factor"); :};
-
-factor ::= ID:_id {: System.out.println("Regla 25:  ID" + _id.toString()); :};
-factor ::= CONST_ENTERA {: System.out.println("Regla 26:  CTE ENTERA"); :};
-//factor ::= MENOS CONST_ENTERA {: System.out.println("Regla 26:  CTE ENTERA"); :};
-factor ::= CONST_REAL {: System.out.println("Regla 27:  CONST_REAL"); :};
-factor ::= TEXTO {: System.out.println("Regla 28: TEXTO"); :};
-factor ::= PAREN_A expresion PAREN_C {: System.out.println("Regla 29:  PAREN_A expresion PAREN_C"); :};
+factor ::= ID:_id {: System.out.println("Regla 049: factor ::= ID " + _id.toString()); :};
+factor ::= CONST_ENTERA {: System.out.println("Regla 050: factor ::= CONST_ENTERA "); :};
+//factor ::= OP_REST CONST_ENTERA {: :};  para numeros negativos??
+factor ::= CONST_REAL {: System.out.println("Regla 051: factor ::= CONST_REAL "); :};
+factor ::= TEXTO {: System.out.println("Regla 052: factor ::= TEXTO "); :};
+factor ::= PAREN_A expresion PAREN_C {: System.out.println("Regla 053: factor ::= PAREN_A expresion PAREN_C "); :};
