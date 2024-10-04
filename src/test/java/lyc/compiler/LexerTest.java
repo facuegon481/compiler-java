@@ -54,11 +54,19 @@ public class LexerTest {
     });
   }
 
+  @Test 
+  public void invalidPositiveFloatConstantValue() {
+    assertThrows(InvalidIntegerException.class, () -> {
+      scan("%f".formatted(Constants.MAX_FLOAT_CONSTANT * 2));
+      nextToken();
+    });
+  }
+
   @Test @Disabled//PREGUNTAR ESTO - EN TEORIA NO TENIAMOS QUE RECONOCER ESTO EN EL LEXICO PERO HAY UN TEST PARA DETECTAR NEGATIVOS.
   public void invalidNegativeIntegerConstantValue() {
     assertThrows(InvalidIntegerException.class, () -> {
       scan("%d".formatted(-9223372036854775807L));
-      nextToken();
+      nextToken(); 
     });
   }
 

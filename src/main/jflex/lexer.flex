@@ -130,7 +130,7 @@ CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 {CONST_ENTERA} {
                 if(!esCteEnteraValida())
                   throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
-                guardarCTE("int");
+                guardarCTE(Constants.INT_TYPE);
                 return symbol(ParserSym.CONST_ENTERA, yytext());
             }
 {PRINTF} { return symbol(ParserSym.PRINTF, yytext()); }
@@ -161,7 +161,7 @@ CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 {CONST_REAL} {
           if(!esCteFloatValido())
               throw new InvalidIntegerException(yytext() + " esta fuera de rango permitido.");
-          guardarCTE("float");
+          guardarCTE(Constants.FLOAT_TYPE);
           return symbol(ParserSym.CONST_REAL, yytext());
       }
 
@@ -173,7 +173,7 @@ CONST_REAL = {CONST_ENTERA}?{PUNTO} {DIGITO}*
 {TEXTO} {
           if(!esLongitudStringValida())
               throw new InvalidLengthException("\"" + yytext() + "\""+ " excede el maximo permitido");
-          guardarCTE("string");
+          guardarCTE(Constants.STRING_TYPE);
           return symbol(ParserSym.TEXTO, yytext());
       }
 

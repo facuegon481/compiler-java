@@ -77,6 +77,8 @@ non terminal escribir;
 non terminal lista_numeros;
 non terminal constante_numero;
 
+// getPenultimatePositon sumaLosUltimos Tercetos
+
 start with inicio;
 
 inicio ::= inicializacion programa {: System.out.println("Regla 001: inicio ::= inicializacion programa "); :};

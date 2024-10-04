@@ -1,5 +1,7 @@
 package lyc.compiler.files;
 
+import lyc.compiler.constants.Constants;
+
 public class SymbolTableRecord {
 
     private String type;
@@ -19,6 +21,9 @@ public class SymbolTableRecord {
     }
 
     public String getType() {
+        if(type == null) {
+            return "";
+        }
         return type;
     }
 
@@ -27,6 +32,9 @@ public class SymbolTableRecord {
     }
 
     public String getValue() {
+        if(value == null) {
+            return "";
+        }
         return value;
     }
 
@@ -35,6 +43,9 @@ public class SymbolTableRecord {
     }
 
     public String getLength() {
+        if(length == null | this.type != Constants.STRING_TYPE) {
+            return "";
+        }
         return length;
     }
 

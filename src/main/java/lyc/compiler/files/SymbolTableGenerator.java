@@ -23,7 +23,8 @@ public class SymbolTableGenerator implements FileGenerator{
     public void generate(FileWriter fileWriter) throws IOException {
         String file = String.format("%-30s|%-30s|%-30s|%-30s\n","NOMBRE","TIPODATO","VALOR","LONGITUD");
         for (Map.Entry<String, SymbolTableRecord> entry : this.symbols.entrySet()) {
-            file += String.format("%-30s", entry.getKey()) + "|" + entry.getValue().toString() + "\n";
+            file += String.format("%-30s", entry.getKey()) + "|" + String.format("%-30s",entry.getValue().getType().toString())
+             + "|" + String.format("%-30s", entry.getValue().getValue()) + "|" + String.format("%-30s",entry.getValue().getLength()) + "\n";
         }
         fileWriter.write(file);
     }
@@ -34,10 +35,10 @@ public class SymbolTableGenerator implements FileGenerator{
         }
     }
 
-    public void addToken(String token,String dataType) {
+    public void addToken(String token, String dataType) {
         if(!this.symbols.containsKey(token)) {
             SymbolTableRecord data = new SymbolTableRecord(dataType, token, Integer.toString(token.length()-1));
-            this.symbols.put("_" + token,data);
+            this.symbols.put("_" + token, data);
         }
     }
 }
