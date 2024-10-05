@@ -92,8 +92,6 @@ sentencia ::= seleccion {: System.out.println("Regla 005: sentencia ::= seleccio
 sentencia ::= iteracion {: System.out.println("Regla 006: sentencia ::= iteracion "); :};
 sentencia ::= leer {: System.out.println("Regla 007: sentencia ::= leer "); :};
 sentencia ::= escribir {: System.out.println("Regla 008: sentencia ::= escribir "); :};
-sentencia ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 009 : sentencia ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C "); :};
-sentencia ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 010: sentencia ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C "); :};
 
 lista_numeros ::= lista_numeros COMA constante_numero {: System.out.println("Regla 011: lista_numeros ::= lista_numeros COMA constante_numero "); :};
 lista_numeros ::= constante_numero {: System.out.println("Regla 012: lista_numeros ::= constante_numero "); :};
@@ -156,3 +154,5 @@ factor ::= CONST_ENTERA {: System.out.println("Regla 050: factor ::= CONST_ENTER
 factor ::= CONST_REAL {: System.out.println("Regla 051: factor ::= CONST_REAL "); :};
 factor ::= TEXTO {: System.out.println("Regla 052: factor ::= TEXTO "); :};
 factor ::= PAREN_A expresion PAREN_C {: System.out.println("Regla 053: factor ::= PAREN_A expresion PAREN_C "); :};
+factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 009 : factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C "); :};
+factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 010: factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C "); :};
