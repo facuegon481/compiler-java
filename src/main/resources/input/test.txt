@@ -36,6 +36,6 @@ si (NOT a > b)
 {
     escribir("a no es mas grande que b")
 }
-getPenultimatePosition([3, 8.2, 2, 55.5])
-sumaLosUltimos(4; [28, 13.5, 4, 5.5, 17, 52])
+a := getPenultimatePosition([3, 8.2, 2, 55.5])
+b := sumaLosUltimos(4; [28, 13.5, 4, 5.5, 17, 52])
 
