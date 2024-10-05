@@ -1,8 +1,16 @@
 package lyc.compiler;
 
 import java_cup.runtime.*;
+import lyc.compiler.files.*;
 
 class Parser;
+
+init with {: System.out.println("Parser inicializado"); 
+  Integer factorInd = 0; 
+  Integer terminoInd = 0; 
+  Integer expresionInd = 0; 
+:};
+
 
 // Terminals
 terminal ID;
@@ -148,7 +156,7 @@ termino ::= termino OP_MULT factor {: System.out.println("Regla 046: termino ::=
 termino ::= termino OP_DIV factor {: System.out.println("Regla 047: termino ::= termino OP_DIV factor "); :};
 termino ::= factor {: System.out.println("Regla 048: termino ::= factor "); :};
 
-factor ::= ID:_id {: System.out.println("Regla 049: factor ::= ID " + _id.toString()); :};
+factor ::= ID:_id {: IntermediateCodeGenerator.CrearTerceto(_id.toString(), "_", "_"); System.out.println("Regla 049: factor ::= ID " + _id.toString()); :};
 factor ::= CONST_ENTERA {: System.out.println("Regla 050: factor ::= CONST_ENTERA "); :};
 //factor ::= OP_REST CONST_ENTERA {: :};  para numeros negativos??
 factor ::= CONST_REAL {: System.out.println("Regla 051: factor ::= CONST_REAL "); :};
