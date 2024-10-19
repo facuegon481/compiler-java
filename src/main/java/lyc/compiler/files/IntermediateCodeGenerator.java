@@ -27,8 +27,8 @@ public class IntermediateCodeGenerator implements FileGenerator {
         fileWriter.write(file);
     }
 
-    public static Integer CrearTerceto(String primero, String segundo, String tercero) {
-        Terceto nuevo = new Terceto(primero, segundo, tercero);
+    public static Integer CrearTerceto(String primero, Object segundo, Object tercero) {
+        Terceto nuevo = new Terceto(primero, segundo.toString(), tercero.toString());
         ListaTercetos.put(NuevoTercetoNum, nuevo);
         NuevoTercetoNum++;
         return NuevoTercetoNum - 1;
