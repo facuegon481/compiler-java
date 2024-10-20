@@ -2,16 +2,47 @@ package lyc.compiler;
 
 import java_cup.runtime.*;
 import lyc.compiler.files.*;
+import java.util.Stack;
+import java.util.ArrayList;
+import java.util.List;
+
 
 class Parser;
 
 init with {: System.out.println("Parser inicializado"); :}
 
 action code {:
+      Stack<Integer> pilaFactor = new Stack<>();
+      Stack<Integer> pilaTermino = new Stack<>();
+      Stack<Integer> pilaExpresion = new Stack<>();
+    Integer inicioInd = 0;
+    Integer programaInd = 0;
+    Integer sentenciaInd = 0;
+    Integer asignacionInd = 0;
     Integer expresionInd = 0;
     Integer terminoInd = 0;
     Integer factorInd = 0;
-    Integer asignacionInd = 0;
+    Integer seleccionInd = 0;
+    Integer ifheaderInd = 0;
+    Integer condicionInd = 0;
+    Integer comparacionInd = 0;
+    Integer comparadorInd = 0;
+    Integer iteracionInd = 0;
+    Integer whileheaderInd = 0;
+    Integer inicializacionInd = 0;
+    Integer lista_variablesInd = 0;
+    Integer declaracionInd = 0;
+    Integer tipo_datoInd = 0;
+    Integer lista_idsInd = 0;
+    Integer leerInd = 0;
+    Integer escribirInd = 0;
+    Integer lista_numerosInd = 0;
+    Integer constante_numeroInd = 0;
+    Double ultimo = 0.0;
+    Double penultimo = 0.0;
+    Double const_numero = 0.0;
+    Integer cantidad = 0;
+    ArrayList<Double> numeros = new ArrayList<Double>();
 :}  
 
 // Terminals
@@ -103,11 +134,11 @@ sentencia ::= iteracion {: System.out.println("Regla 006: sentencia ::= iteracio
 sentencia ::= leer {: System.out.println("Regla 007: sentencia ::= leer "); :};
 sentencia ::= escribir {: System.out.println("Regla 008: sentencia ::= escribir "); :};
 
-lista_numeros ::= lista_numeros COMA constante_numero {: System.out.println("Regla 011: lista_numeros ::= lista_numeros COMA constante_numero "); :};
-lista_numeros ::= constante_numero {: System.out.println("Regla 012: lista_numeros ::= constante_numero "); :};
+lista_numeros ::= lista_numeros COMA constante_numero {: numeros.add(const_numero); penultimo = ultimo; ultimo = const_numero; System.out.println("Ultimo "+ ultimo.toString() + " Penultimo " + penultimo.toString()); System.out.println("Regla 011: lista_numeros ::= lista_numeros COMA constante_numero "); :};
+lista_numeros ::= constante_numero {: numeros.add(const_numero);  ultimo = const_numero; System.out.println("Ultimo "+ ultimo.toString()); System.out.println("Regla 012: lista_numeros ::= constante_numero "); :};
 
-constante_numero ::= CONST_REAL {: System.out.println("Regla 013: constante_numero ::= CONST_REAL "); :};
-constante_numero ::= CONST_ENTERA {: System.out.println("Regla 014: constante_numero ::= CONST_ENTERA "); :};
+constante_numero ::= CONST_REAL:_constreal {: const_numero = Double.parseDouble(_constreal.toString()); System.out.println(_constreal.toString()); System.out.println("Regla 013: constante_numero ::= CONST_REAL "); :};
+constante_numero ::= CONST_ENTERA:_constentera {: const_numero = Double.parseDouble(_constentera.toString()); System.out.println(_constentera.toString()); System.out.println("Regla 014: constante_numero ::= CONST_ENTERA "); :};
 
 leer ::= SCANF PAREN_A ID PAREN_C {: System.out.println("Regla 015: leer ::= SCANF PAREN_A ID PAREN_C "); :};
 escribir ::= PRINTF PAREN_A factor PAREN_C {: System.out.println("Regla 016: escribir ::= PRINTF PAREN_A factor PAREN_C "); :};
@@ -134,7 +165,7 @@ comparador  ::= MENOR_IGUAL:comp {: System.out.println("Regla 030: comparador  :
 comparador  ::= MAYOR:comp {: System.out.println("Regla 031: comparador  ::= 	MAYOR:comp "); :};
 comparador  ::= MENOR:comp {: System.out.println("Regla 032: comparador  ::= 	MENOR:comp "); :};
 
-asignacion ::= ID:_id ASIGNACION expresion {: asignacionInd = IntermediateCodeGenerator.CrearTerceto(":=", _id.toString(), expresionInd); System.out.println("Regla 033: asignacion ::= ID:_id  ASIGNACION expresion "); :};
+asignacion ::= ID:_id ASIGNACION expresion {: asignacionInd = IntermediateCodeGenerator.CrearTerceto(":=", _id.toString(), pilaExpresion.pop()); System.out.println("Regla 033: asignacion ::= ID:_id  ASIGNACION expresion "); :};
 
 inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C {: System.out.println("Regla 034: inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C "); :};
 
@@ -150,19 +181,28 @@ tipo_dato ::= INTEGER {: System.out.println("Regla 040: tipo_dato ::= INTEGER ")
 tipo_dato ::= FLOAT {: System.out.println("Regla 041: tipo_dato ::= FLOAT "); :};
 tipo_dato ::= STRING {: System.out.println("Regla 042: tipo_dato ::= STRING "); :};
 
-expresion ::= expresion OP_SUMA termino {: expresionInd = IntermediateCodeGenerator.CrearTerceto("+", expresionInd, terminoInd); System.out.println("Regla 043: expresion ::= expresion OP_SUMA termino "); :};
-expresion ::= expresion OP_REST termino {: expresionInd = IntermediateCodeGenerator.CrearTerceto("*", expresionInd, terminoInd); System.out.println("Regla 044: expresion ::= expresion OP_REST termino "); :};
-expresion ::= termino {: expresionInd = terminoInd; System.out.println("Regla 045: expresion ::= termino "); :};
+expresion ::= expresion OP_SUMA termino {: pilaExpresion.push(IntermediateCodeGenerator.CrearTerceto("+", pilaExpresion.pop(), pilaTermino.pop())); System.out.println("Regla 043: expresion ::= expresion OP_SUMA termino "); :};
+expresion ::= expresion OP_REST termino {: pilaExpresion.push(IntermediateCodeGenerator.CrearTerceto("-", pilaExpresion.pop(), pilaTermino.pop())); System.out.println("Regla 044: expresion ::= expresion OP_REST termino "); :};
+expresion ::= termino {: pilaExpresion.push(pilaTermino.pop()); System.out.println("Regla 045: expresion ::= termino "); :};
 
-termino ::= termino OP_MULT factor {: terminoInd = IntermediateCodeGenerator.CrearTerceto("*", terminoInd, factorInd); System.out.println("Regla 046: termino ::= termino OP_MULT factor "); :};
-termino ::= termino OP_DIV factor {: terminoInd = IntermediateCodeGenerator.CrearTerceto("/", terminoInd, factorInd); System.out.println("Regla 047: termino ::= termino OP_DIV factor "); :};
-termino ::= factor {: terminoInd = factorInd; System.out.println("Regla 048: termino ::= factor "); :};
+termino ::= termino OP_MULT factor {: pilaTermino.push(IntermediateCodeGenerator.CrearTerceto("*", pilaTermino.pop(), pilaFactor.pop())); System.out.println("Regla 046: termino ::= termino OP_MULT factor "); :};
+termino ::= termino OP_DIV factor {: pilaTermino.push(IntermediateCodeGenerator.CrearTerceto("/", pilaTermino.pop(), pilaFactor.pop())); System.out.println("Regla 047: termino ::= termino OP_DIV factor "); :};
+termino ::= factor {: pilaTermino.push(pilaFactor.pop()); System.out.println("Regla 048: termino ::= factor "); :};
 
-factor ::= ID:_id {: factorInd = IntermediateCodeGenerator.CrearTerceto(_id.toString(), "_", "_"); System.out.println("Regla 049: factor ::= ID " + _id.toString()); :};
-factor ::= CONST_ENTERA:_conste {: factorInd = IntermediateCodeGenerator.CrearTerceto(_conste.toString(), "_", "_"); System.out.println("Regla 050: factor ::= CONST_ENTERA "); :};
+factor ::= ID:_id {: pilaFactor.push(IntermediateCodeGenerator.CrearTerceto(_id.toString(), "_", "_")); System.out.println("Regla 049: factor ::= ID " + _id.toString()); :};
+factor ::= CONST_ENTERA:_conste {: pilaFactor.push(IntermediateCodeGenerator.CrearTerceto("_" + _conste.toString(), "_", "_")); System.out.println("Regla 050: factor ::= CONST_ENTERA "); :};
 //factor ::= OP_REST CONST_ENTERA {: :};  para numeros negativos??
-factor ::= CONST_REAL:_constr {: factorInd = IntermediateCodeGenerator.CrearTerceto(_constr.toString(), "_", "_"); System.out.println("Regla 051: factor ::= CONST_REAL "); :};
-factor ::= TEXTO:_texto {: factorInd = IntermediateCodeGenerator.CrearTerceto(_texto.toString(), "_", "_"); System.out.println("Regla 052: factor ::= TEXTO "); :};
-factor ::= PAREN_A expresion PAREN_C {: System.out.println("Regla 053: factor ::= PAREN_A expresion PAREN_C "); :};
-factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 009 : factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C "); :};
-factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C {: System.out.println("Regla 010: factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C "); :};
+factor ::= CONST_REAL:_constr {: pilaFactor.push(IntermediateCodeGenerator.CrearTerceto(_constr.toString(), "_", "_")); System.out.println("Regla 051: factor ::= CONST_REAL "); :};
+factor ::= TEXTO:_texto {: pilaFactor.push(IntermediateCodeGenerator.CrearTerceto(_texto.toString(), "_", "_")); System.out.println("Regla 052: factor ::= TEXTO "); :};
+factor ::= PAREN_A expresion PAREN_C {: pilaFactor.push(expresionInd); System.out.println("Regla 053: factor ::= PAREN_A expresion PAREN_C "); :};
+factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C {:  pilaFactor.push(IntermediateCodeGenerator.CrearTerceto("_" + penultimo.toString(), "_", "_")); System.out.println("Regla 009 : factor ::= GETPENULTIMATEPOSITION PAREN_A COR_A lista_numeros COR_C PAREN_C "); :};
+factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA:_cantidad {: cantidad = Integer.parseInt(_cantidad.toString()); :} PUNTO_COMA COR_A lista_numeros COR_C PAREN_C 
+    {: 
+        List<Double> sublist = numeros.subList(numeros.size() - (cantidad), numeros.size()); 
+        Double resultado = 0.0;
+        for(Double num :sublist) {
+            resultado = resultado + num;
+        }
+        pilaFactor.push(IntermediateCodeGenerator.CrearTerceto("_" + resultado.toString(), "_", "_"));
+        System.out.println("Regla 010: factor ::= SUMALOSULTIMOS PAREN_A CONST_ENTERA PUNTO_COMA COR_A lista_numeros COR_C PAREN_C "); 
+    :};
