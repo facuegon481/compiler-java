@@ -8,8 +8,8 @@ import lyc.compiler.model.Terceto;
 
 public class IntermediateCodeGenerator implements FileGenerator {
     private static IntermediateCodeGenerator intermediateCodeGenerator;
-    private static HashMap<Integer,Terceto> ListaTercetos = new HashMap<Integer,Terceto>();
-    private static Integer NuevoTercetoNum = 11;
+    public static HashMap<Integer,Terceto> ListaTercetos = new HashMap<Integer,Terceto>();
+    public static Integer NuevoTercetoNum = 11;
 
     public static IntermediateCodeGenerator getInstance() {
         if(intermediateCodeGenerator == null) {

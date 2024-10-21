@@ -15,6 +15,10 @@ action code {:
       Stack<Integer> pilaFactor = new Stack<>();
       Stack<Integer> pilaTermino = new Stack<>();
       Stack<Integer> pilaExpresion = new Stack<>();
+      Stack<Integer> pilaInicioWhile = new Stack<>();
+      Stack<String> pilaComparador= new Stack<>();
+      Stack<String> pilaTipoDato= new Stack<>();
+
     Integer inicioInd = 0;
     Integer programaInd = 0;
     Integer sentenciaInd = 0;
@@ -43,7 +47,9 @@ action code {:
     Double const_numero = 0.0;
     Integer cantidad = 0;
     ArrayList<Double> numeros = new ArrayList<Double>();
-:}  
+    ArrayList<String> list_ids = new ArrayList<String>();
+
+:}
 
 // Terminals
 terminal ID;
@@ -143,27 +149,74 @@ constante_numero ::= CONST_ENTERA:_constentera {: const_numero = Double.parseDou
 leer ::= SCANF PAREN_A ID PAREN_C {: System.out.println("Regla 015: leer ::= SCANF PAREN_A ID PAREN_C "); :};
 escribir ::= PRINTF PAREN_A factor PAREN_C {: System.out.println("Regla 016: escribir ::= PRINTF PAREN_A factor PAREN_C "); :};
 
-whileheader ::= WHILE PAREN_A condicion PAREN_C {: System.out.println("Regla 017: whileheader ::= WHILE PAREN_A condicion PAREN_C "); :};
-iteracion ::= whileheader LLAVE_A programa LLAVE_C {: System.out.println("Regla 018: iteracion ::= whileheader LLAVE_A programa LLAVE_C "); :};
+whileheader ::= WHILE PAREN_A condicion PAREN_C
+{:
+    int inicioWhile = IntermediateCodeGenerator.NuevoTercetoNum;
+    int tercetoCondicion = pilaExpresion.pop();
+    int tercetoSaltoFalso = IntermediateCodeGenerator.CrearTerceto("BF", tercetoCondicion, "_");
 
-ifheader ::= IF PAREN_A condicion PAREN_C {: System.out.println("Regla 019: ifheader ::= IF PAREN_A condicion PAREN_C "); :};
+    pilaFactor.push(tercetoSaltoFalso);
+    pilaInicioWhile.push(inicioWhile);
 
-seleccion ::= ifheader LLAVE_A programa LLAVE_C {: System.out.println("Regla 020: seleccion ::= ifheader LLAVE_A programa LLAVE_C "); :};
-seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C {: System.out.println("Regla 021: seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C "); :};
+    System.out.println("Regla 017: whileheader ::= WHILE PAREN_A condicion PAREN_C ");
+
+:};
+iteracion ::= whileheader LLAVE_A programa LLAVE_C {:
+    int inicioWhile = pilaInicioWhile.pop();
+    IntermediateCodeGenerator.CrearTerceto("BI", inicioWhile, "_");
+    int tercetoSaltoFalso = pilaFactor.pop();
+    IntermediateCodeGenerator.ListaTercetos.get(tercetoSaltoFalso).setThird(IntermediateCodeGenerator.NuevoTercetoNum.toString());
+    System.out.println("Regla 018: iteracion ::= whileheader LLAVE_A programa LLAVE_C ");
+:};
+
+ifheader ::= IF PAREN_A condicion PAREN_C {:
+    int tercetoCondicion = pilaExpresion.pop();
+    int tercetoSaltoFalso = IntermediateCodeGenerator.CrearTerceto("BF", tercetoCondicion, "_");
+    pilaFactor.push(tercetoSaltoFalso);
+
+    System.out.println("Regla 019: ifheader ::= IF PAREN_A condicion PAREN_C ");
+:};
+
+seleccion ::= ifheader LLAVE_A programa LLAVE_C {:
+    int tercetoSaltoFalso = pilaFactor.pop();
+    IntermediateCodeGenerator.ListaTercetos.get(tercetoSaltoFalso).setThird(IntermediateCodeGenerator.NuevoTercetoNum.toString());
+
+    System.out.println("Regla 020: seleccion ::= ifheader LLAVE_A programa LLAVE_C ");
+:};
+seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C {:
+    int tercetoCondicion = pilaExpresion.pop();
+    int tercetoSaltoFalso = IntermediateCodeGenerator.CrearTerceto("BF", tercetoCondicion, "_");
+
+    pilaFactor.push(tercetoSaltoFalso);
+
+    int tercetoSaltoIncondicional = IntermediateCodeGenerator.CrearTerceto("BI", "_", "_");
+
+    IntermediateCodeGenerator.ListaTercetos.get(tercetoSaltoFalso).setThird(IntermediateCodeGenerator.NuevoTercetoNum.toString());
+
+    pilaFactor.push(tercetoSaltoIncondicional);
+
+    int tercetoSaltoIncondicional2 = pilaFactor.pop();
+    IntermediateCodeGenerator.ListaTercetos.get(tercetoSaltoIncondicional2).setSecond(IntermediateCodeGenerator.NuevoTercetoNum.toString());
+    System.out.println("Regla 021: seleccion ::= ifheader LLAVE_A programa LLAVE_C ELSE LLAVE_A programa LLAVE_C ");
+:};
 
 condicion ::= comparacion OR comparacion {: System.out.println("Regla 022: condicion ::= comparacion OR comparacion "); :};
 condicion ::= comparacion AND comparacion {: System.out.println("Regla 023: condicion ::= comparacion AND comparacion "); :};
 condicion ::= NOT comparacion {: System.out.println("Regla 024: condicion ::= NOT comparacion "); :};
 condicion ::= comparacion {: System.out.println("Regla 025: condicion ::= comparacion "); :};
 
-comparacion ::= expresion comparador expresion {: System.out.println("Regla 026: comparacion ::= expresion comparador expresion "); :};
+comparacion ::= expresion comparador:comp expresion{:
+int tercetoComparacion = IntermediateCodeGenerator.CrearTerceto(pilaComparador.pop(), pilaExpresion.pop(), pilaExpresion.pop());
+pilaExpresion.push(tercetoComparacion);
+System.out.println("Regla 026: comparacion ::= expresion comparador expresion ");
+:};
 
-comparador  ::= IGUAL_IGUAL:comp {: System.out.println("Regla 027: comparador  ::= 	IGUAL_IGUAL:comp "); :};
-comparador  ::= DISTINTO:comp {: System.out.println("Regla 028: comparador  ::= 	DISTINTO:comp "); :};
-comparador  ::= MAYOR_IGUAL:comp {: System.out.println("Regla 029: comparador  ::= 	MAYOR_IGUAL:comp "); :};
-comparador  ::= MENOR_IGUAL:comp {: System.out.println("Regla 030: comparador  ::= 	MENOR_IGUAL:comp "); :};
-comparador  ::= MAYOR:comp {: System.out.println("Regla 031: comparador  ::= 	MAYOR:comp "); :};
-comparador  ::= MENOR:comp {: System.out.println("Regla 032: comparador  ::= 	MENOR:comp "); :};
+comparador  ::= IGUAL_IGUAL:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 027: comparador  ::= 	IGUAL_IGUAL:comp "); :};
+comparador  ::= DISTINTO:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 028: comparador  ::= 	DISTINTO:comp "); :};
+comparador  ::= MAYOR_IGUAL:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 029: comparador  ::= 	MAYOR_IGUAL:comp "); :};
+comparador  ::= MENOR_IGUAL:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 030: comparador  ::= 	MENOR_IGUAL:comp "); :};
+comparador  ::= MAYOR:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 031: comparador  ::= 	MAYOR:comp "); :};
+comparador  ::= MENOR:comp {: pilaComparador.push(comp.toString()); System.out.println("Regla 032: comparador  ::= 	MENOR:comp "); :};
 
 asignacion ::= ID:_id ASIGNACION expresion {: asignacionInd = IntermediateCodeGenerator.CrearTerceto(":=", _id.toString(), pilaExpresion.pop()); System.out.println("Regla 033: asignacion ::= ID:_id  ASIGNACION expresion "); :};
 
@@ -172,14 +225,22 @@ inicializacion ::= INIT LLAVE_A lista_variables LLAVE_C {: System.out.println("R
 lista_variables ::= lista_variables declaracion {: System.out.println("Regla 035: lista_variables ::= lista_variables declaracion "); :};
 lista_variables ::= declaracion {: System.out.println("Regla 036: lista_variables ::= declaracion "); :};
 
-declaracion ::= lista_ids DOS_PUNTOS tipo_dato {: System.out.println("Regla 037: declaracion ::= lista_ids DOS_PUNTOS tipo_dato "); :};
+declaracion ::= lista_ids DOS_PUNTOS tipo_dato {:
+    String tipo_dato_declaracion = pilaTipoDato.pop();
+    for (String id : list_ids) {
+        // Genera un terceto para cada declaración de variable
+        int tercetoDeclaracion = IntermediateCodeGenerator.CrearTerceto("DECLARE", id, tipo_dato_declaracion);
+    }
+    list_ids.clear();
+    System.out.println("Regla 037: declaracion ::= lista_ids DOS_PUNTOS tipo_dato ");
+:};
 
-lista_ids ::= lista_ids COMA ID {: System.out.println("Regla 038: lista_ids ::= lista_ids COMA ID "); :};
-lista_ids ::= ID {: System.out.println("Regla 039: lista_ids ::= ID "); :};
+lista_ids ::= lista_ids COMA ID:id {: list_ids.add(id.toString()); System.out.println("Regla 038: lista_ids ::= lista_ids COMA ID "); :};
+lista_ids ::= ID:id {: list_ids.add(id.toString()); System.out.println("Regla 039: lista_ids ::= ID "); :};
 
-tipo_dato ::= INTEGER {: System.out.println("Regla 040: tipo_dato ::= INTEGER "); :};
-tipo_dato ::= FLOAT {: System.out.println("Regla 041: tipo_dato ::= FLOAT "); :};
-tipo_dato ::= STRING {: System.out.println("Regla 042: tipo_dato ::= STRING "); :};
+tipo_dato ::= INTEGER:tipo {: pilaTipoDato.push(tipo.toString()); System.out.println("Regla 040: tipo_dato ::= INTEGER "); :};
+tipo_dato ::= FLOAT:tipo {: pilaTipoDato.push(tipo.toString()); System.out.println("Regla 041: tipo_dato ::= FLOAT "); :};
+tipo_dato ::= STRING:tipo {: pilaTipoDato.push(tipo.toString()); System.out.println("Regla 042: tipo_dato ::= STRING "); :};
 
 expresion ::= expresion OP_SUMA termino {: pilaExpresion.push(IntermediateCodeGenerator.CrearTerceto("+", pilaExpresion.pop(), pilaTermino.pop())); System.out.println("Regla 043: expresion ::= expresion OP_SUMA termino "); :};
 expresion ::= expresion OP_REST termino {: pilaExpresion.push(IntermediateCodeGenerator.CrearTerceto("-", pilaExpresion.pop(), pilaTermino.pop())); System.out.println("Regla 044: expresion ::= expresion OP_REST termino "); :};
